@@ -1,0 +1,37 @@
+utilisateurs
+{
+    admin, operator ou normal
+    username
+    nickname
+    channels
+    mode d'utilisateur (i/s/w/o)
+}
+
+channels
+{
+    nom 
+    admins
+    operators
+    users
+    banned
+    bool invite-only
+}
+
+commandes (*=modo)
+{
+    join
+    away
+    invite
+    list
+    me 
+    msg
+    nick 
+    notice
+    part
+    privmsg
+    query
+    quit
+    topic
+    kick
+    mode
+}
