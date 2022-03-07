@@ -8,4 +8,7 @@
 # include <time.h>
 # include <cstring>
 
+# include "User.hpp"
+# include "Channel.hpp"
+
 #endif
