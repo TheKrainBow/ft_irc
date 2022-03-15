@@ -1,3 +1,6 @@
 a.out
 *.out
 bircd
+irssi
+simple_socket_working/client
+simple_socket_working/server
