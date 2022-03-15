@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	bzero((char *) &serv_addr, sizeof(serv_addr));		// ALLOCATION DE LA STRUCTURE DU SERVEUR
 	portno = atoi(argv[1]);								// RECUPERATION DU PORT EN INT
 	serv_addr.sin_family = AF_INET;						// ON DEFINIT LE TYPE DE CONNEXION DE NOTRE SERVEUR
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = INADDR_ANY;				// ON RECUPERE L'ADDRESSE DE LA MACHINE
 	serv_addr.sin_port = htons(portno);					// ON CONVERTI NOTRE INT EN PORT POUR AUTHORISER LES CONNEXIONS
 	if (bind(sockfd, (struct sockaddr *) &serv_addr,
 			sizeof(serv_addr)) < 0) 					// ON ASSOCIE LA STRUCTURE ALLOUÉ, AU FD RETOURNÉ PAR SOCKET
@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
 	
 	/*					ON LIS LE MESSAGE DU CLIENT DEPUIS SON FD DE SOCKET, PUIS ON LUI ECRIT		*/
 	bzero(buffer,256);
-	n = read(newsockfd,buffer,255);
+	/*n = read(newsockfd,buffer,255);
 	if (n < 0) error("ERROR reading from socket");
-	printf("Here is the message: %s\n",buffer);
+	printf("Here is the message: %s\n",buffer);*/
 	n = write(newsockfd,"I got your message",18);
 	if (n < 0) error("ERROR writing to socket");
 	/*					ON LIS LE MESSAGE DU CLIENT DEPUIS SON FD DE SOCKET, PUIS ON LUI ECRIT		*/
