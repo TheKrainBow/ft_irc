@@ -40,4 +40,13 @@ int main(int ac, char **av)
     sockaddr_in *addr = new sockaddr_in;
     if (initSock(addr, atol(av[1]), fd))
         return (ERR_SOCKET);
+    accept(fd, static_cast<sockaddr *> (addr), sizeof(static_cast<sockaddr> (*addr)));
+    //listen
+    while (poll() > 0)
+    {
+        //trucs
+
+
+        accept();
+    }
 }
