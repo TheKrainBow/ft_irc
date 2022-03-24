@@ -60,11 +60,11 @@ int main(int ac, char **av)
     int portNewClient = accept(fd, (sockaddr *)addr, &size); //va bloquer jusqu'a avoir au moins une tentative de connexion
     sockaddr_in *addrNewClient = new sockaddr_in; //TODO : il faudrait faire une liste chainee des clients a surveiller avec poll
     sock_bind_listen(addrNewClient, portNewClient);
-    while (poll() > 0)
+    /*while (poll() > 0)
     {
         //trucs
 
 
         portNewClient = accept();
-    }
+    }*/
 }
