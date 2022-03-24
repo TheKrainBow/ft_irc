@@ -62,7 +62,7 @@ void	Server::start(void)
 	{
 		Client tempUser(fd, nick, name, *this);
 		_clientList.push_back(tempUser);
-		tempUser.comfirmConnexion();
+		tempUser.confirmConnexion();
 	}
 	catch (Client::AlreadyUsedParametersException &exception)
 	{

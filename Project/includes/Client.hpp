@@ -21,7 +21,7 @@ class Client
 		~Client();
 		Client 		&operator=(Client const & rhs);
 	
-		void		comfirmConnexion(void);			//COMFIRME LA CONNEXION AU CLIENT
+		void		confirmConnexion(void);			//COMFIRME LA CONNEXION AU CLIENT
 		void		command(std::string command);	//EXECUTE UNE COMMANDE
 		int			getFd(void) const;
 		std::string	getNickname(void) const;

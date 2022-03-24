@@ -54,9 +54,9 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	Client::comfirmConnexion(void)
+void	Client::confirmConnexion(void)
 {
-	write(_fd, "Some Comfirmation Message", 26);
+	write(_fd, "Some Confirmation Message", 26);
 }
 
 void	Client::command(std::string command)
