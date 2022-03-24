@@ -20,6 +20,9 @@
 
 # define ERR_ARG -1
 # define ERR_SOCKET -2
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 2048
+# endif
 
 class Client;
 
