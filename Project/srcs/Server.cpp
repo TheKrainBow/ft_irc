@@ -60,7 +60,7 @@ int sock_bind_listen(const sockaddr_in *addr, int fd)
 //pour start
 int sock_bind_listen(const sockaddr_in *addr)
 {
-	int fd = socket(PF_INET, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
+	int fd = socket(PF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
 	if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
 		return (-1);
 	if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
@@ -90,9 +90,8 @@ int		Server::start(void)
 
 //mise em place de la socket qui ecoute au port donne en argument du programme
 	struct pollfd *listening = new (struct pollfd);
-	listening->fd = socket(PF_INET, SOCK_STREAM, 0); //PF_INET pour IPv4, SOCK_STREAM est securise et ne fixe pas une taille de paquet
-	fcntl(listening->fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
-	listening->events = POLLIN; //event "il y a des donnees en attente de lecture"
+	listening->fd = socket(PF_INET, SOCK_STREAM/* | SOCK_NONBLOCK*/, 0); //PF_INET pour IPv4, SOCK_STREAM est securise et ne fixe pas une taille de paquet
+	listening->events = POLLRDNORM; //event "il y a des donnees en attente de lecture"
 	sockaddr_in addr;
 	if (initSock(&addr, _port, listening->fd))
 		return (ERR_SOCKET);
@@ -103,13 +102,15 @@ int		Server::start(void)
 
 	sockaddr_in addrNewClient;
 	struct pollfd	newClient;
-	while (poll(&toMonitor[0], toMonitor.size(), -1) > 0)
-	{
 std::cout << "balise" << std::endl;
+	//while (poll(&toMonitor[0], toMonitor.size(), -1) > 0)
+	while (poll(listening, 1, -1) > 0)
+
+	{
+		std::cout << "boucle " ;
 		newClient.fd = accept(listening->fd, (sockaddr *)&addr, &size);
 		if (newClient.fd > 0)
 		{
-			fcntl(newClient.fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
 			sock_bind_listen(&addrNewClient, newClient.fd);
 			toMonitor.push_back(newClient);
 			//TODO : creer un nouveau Client ?
@@ -118,10 +119,9 @@ std::cout << "balise" << std::endl;
 		{
 			if (toMonitor[i].revents == POLLHUP) //le client s'est deconnecte
 				(void)newClient;//TODO : supprimer ce client
-			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, 0) > 0)
+			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, MSG_DONTWAIT) > 0)
 				(void)buffer;//TODO : envoyer buffer au parsing !
 		}
-		std::cout << "boucle " ;
 	}
 	std::cout << "Sorti du while infini" << std::endl;
 	
