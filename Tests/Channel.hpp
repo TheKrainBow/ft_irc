@@ -3,38 +3,27 @@
 
 # include <iostream>
 # include <string>
+# include "User.hpp"
+# include <vector>
 
 class User;
 
-typedef struct s_user
-{
-	User		user;
-	std::string	nickname;
-}				t_user;
-
 class Channel
 {
+	private:
+		std::string			_name;
+		std::vector<User>	_admins;
+		std::vector<User>	_operators;
+		std::vector<User>	_users;
+		std::vector<User>	_banned;
+		bool				_inviteOnly;
 
 	public:
-
 		Channel();
 		Channel( Channel const & src );
 		~Channel();
-
 		Channel &		operator=( Channel const & rhs );
-
-		std::string	getNickname();
-		void		setNickname(std::string nickname1, std::string nickname2, std::string nickname3);
-		
-
-	private:
-		std::string	_name;
-		t_user		*_admins;
-		t_user		*_operators;
-		t_user		*_users;
-		User		*_banned;
-		bool		_inviteOnly;
-
+		std::string		getNickname();
 };
 
 std::ostream &			operator<<( std::ostream & o, Channel const & i );

@@ -13,25 +13,24 @@ typedef enum e_userMode
 
 class User
 {
+	private:
+		std::string	_username;
+		Channel		*_channels;
+		t_userMode	_mode;
 
 	public:
-
 		User();
 		User( User const & src );
 		~User();
 
-		User &		operator=( User const & rhs );
 
+		User &		operator=( User const & rhs );
 		std::string	getUsername();
 		void		setUsername(std::string username);
 		std::string	*getListChannels(void);
 		t_userMode	getMode(void);
 		void		setMode(t_userMode mode);
 
-	private:
-		std::string	_username;
-		Channel		*_channels;
-		t_userMode	_mode;
 };
 
 std::ostream &			operator<<( std::ostream & o, User const & i );
