@@ -45,7 +45,27 @@ std::ostream &			operator<<( std::ostream & o, Command const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	Command::nick()
+{
+	this->_client.SetNickname(_arguments[0]);
+}
 
+void	Command::user()
+{
+	this->_client.SetUsername(_arguments[0]);
+}
+
+void	Command::cap()
+{
+	if (_arguments[0].compare("LS") == 0)
+	{
+		// WAIT CAP END
+	}
+	else
+	{
+		// REGISTER USER
+	}
+}
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

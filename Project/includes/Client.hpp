@@ -28,6 +28,8 @@ class Client
 		int			getFd(void) const;
 		std::string	getNickname(void) const;
 		std::string	getUsername(void) const;
+		void		SetNickname(std::string nname);
+		void		SetUsername(std::string uname);
 
 //									EXCEPTIONS								  //
 		class AlreadyUsedParametersException : virtual public std::exception

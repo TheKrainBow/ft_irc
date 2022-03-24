@@ -19,6 +19,9 @@ class Command
 		~Command();
 		Command &operator=( Command const & rhs );
 		std::string	getCommand(void) const;
+		void		nick(void);
+		void		user(void);
+		void		cap(void);
 };
 
 std::ostream &			operator<<( std::ostream & o, Command const & i );

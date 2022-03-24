@@ -113,3 +113,20 @@ std::string	Client::getUsername(void) const
 }
 
 /* ************************************************************************** */
+
+
+void	Client::SetNickname(std::string nname)
+{
+	if (nname.empty() == false)
+		this->_nickname = nname;
+	else
+		throw Client::ErrorInCommandException("NULL NICKNAME");
+}
+
+void	Client::SetUsername(std::string uname)
+{
+	if (uname.empty() == false)
+		this->_username = uname;
+	else
+		throw Client::ErrorInCommandException("NULL USERNAME");
+}
