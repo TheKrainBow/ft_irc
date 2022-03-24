@@ -19,6 +19,7 @@ class Client
 	public:
 		Client( Client const & src );
 		Client(struct pollfd fd, std::string nickname, std::string username, Server &server);
+		Client(std::string connexionBuffer, Server &server);
 		~Client();
 		Client 		&operator=(Client const & rhs);
 	

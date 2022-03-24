@@ -49,35 +49,35 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 //pour start
 int sock_bind_listen(const sockaddr_in *addr, int fd)
 {
-    if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
-        return (-1);
+	if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
+		return (-1);
 std::cout << "fd = " << fd << std::endl;
-    if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
-        return (-2);
-    return (0);
+	if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
+		return (-2);
+	return (0);
 }
 
 //pour start
 int sock_bind_listen(const sockaddr_in *addr)
 {
-    int fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
-    if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
-        return (-1);
-    if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
-        return (-2);
-    return (fd);
+	int fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
+	if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
+		return (-1);
+	if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
+		return (-2);
+	return (fd);
 }
 
 //pour start
 int initSock(sockaddr_in *addr, long port, int fd)
 {
-    addr->sin_addr.s_addr = INADDR_ANY; //pour choper toutes les connections, locales ou non
-    addr->sin_port = htonl(port);
-    addr->sin_family = AF_INET6; //pour choper les IPv6
-    //addr->sin_zero sert a rien, juste a s'assurer que la structure prenne 16 octets
-    if (sock_bind_listen(addr, fd) < 0)
-        return (-1);
-    return (0);
+	addr->sin_addr.s_addr = INADDR_ANY; //pour choper toutes les connections, locales ou non
+	addr->sin_port = htonl(port);
+	addr->sin_family = AF_INET6; //pour choper les IPv6
+	//addr->sin_zero sert a rien, juste a s'assurer que la structure prenne 16 octets
+	if (sock_bind_listen(addr, fd) < 0)
+		return (-1);
+	return (0);
 }
 
 int		Server::start(void)
@@ -90,28 +90,26 @@ int		Server::start(void)
 
 //mise em place de la socket qui ecoute au port donne en argument du programme
 	struct pollfd *listening = new (struct pollfd);
-	listening.fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
-    fcntl(listening.fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
-	listening.events = POLLIN; //event "il y a des donnees en attente de lecture"
+	listening->fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
+	fcntl(listening->fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
+	listening->events = POLLIN; //event "il y a des donnees en attente de lecture"
 	sockaddr_in addr;
 std::cout << "balise" << std::endl;
-    if (initSock(&addr, _port, listening.fd))
-        return (ERR_SOCKET);
+	if (initSock(&addr, _port, listening->fd))
+		return (ERR_SOCKET);
 	
-//																			  //
-    socklen_t size = sizeof(addr);
+	socklen_t size = sizeof(addr);
 	std::vector<struct pollfd> toMonitor; //tableau des fd a surveiller ave poll()
-	toMonitor.push_back(listening);
+	toMonitor.push_back(*listening);
 
-//
-    sockaddr_in addrNewClient;
+	sockaddr_in addrNewClient;
 	struct pollfd	newClient;
 	while (poll(&toMonitor[0], toMonitor.size(), -1) > 0)
 	{
-		newClient.fd = accept(listening.fd, (sockaddr *)&addr, &size); //va bloquer jusqu'a avoir au moins une tentative de connexion
+		newClient.fd = accept(listening->fd, (sockaddr *)&addr, &size); //va bloquer jusqu'a avoir au moins une tentative de connexion
 		if (newClient.fd > 0)
 		{
-    		fcntl(newClient.fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
+			fcntl(newClient.fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
 			sock_bind_listen(&addrNewClient, newClient.fd);
 			toMonitor.push_back(newClient);
 			//TODO : creer un nouveau Client ?

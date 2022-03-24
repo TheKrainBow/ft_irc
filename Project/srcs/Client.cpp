@@ -9,6 +9,23 @@ Client::Client( const Client & src ) : _server(src._server)
 	*this = src;
 }
 
+Client::Client(std::string command, Server &server) : _server(server)
+{
+	std::vector<std::string> args;
+	std::size_t found = command.find_first_of("\n");
+	std::size_t first = 0;
+	while (found != std::string::npos)
+	{
+		args.push_back(command.substr(first, found - first));
+		first = found;
+		found = command.find_first_of("\n",found + 1);
+	}
+	for (std::vector<std::string>::iterator it = args.begin() ; it != args.end() ; it++)
+	{
+		this->command(*it);
+	}
+}
+
 Client::Client(struct pollfd fd, std::string nickname, std::string username, Server &server)
 : _nickname(nickname), _username(username), _fd(fd), _server(server)
 {
@@ -85,9 +102,9 @@ int			Client::getFd(void) const
 	return (_fd.fd);
 }
 
-std::string	Client::getNickname(void) const
+std::string	Client::getUsername(void) const
 {
-	return (_nickname);
+	return (_username);
 }
 
 std::string	Client::getUsername(void) const
