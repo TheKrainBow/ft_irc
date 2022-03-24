@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <string>
+# include <poll.h>
 # include "Server.hpp"
 
 class Server;
@@ -12,7 +13,7 @@ class Client
 	private:
 		std::string	_nickname;
 		std::string	_username;
-		int			_fd;
+		struct pollfd	_fd; //pour avoir le fd, il faut faire _fd.fd
 		Server		&_server;
 
 	public:
