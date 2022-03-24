@@ -102,9 +102,9 @@ int			Client::getFd(void) const
 	return (_fd.fd);
 }
 
-std::string	Client::getUsername(void) const
+std::string	Client::getNickname(void) const
 {
-	return (_username);
+	return (_nickname);
 }
 
 std::string	Client::getUsername(void) const

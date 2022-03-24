@@ -3,6 +3,7 @@
 
 # include <arpa/inet.h>
 # include <cstring>
+# include <errno.h>
 # include <fcntl.h>
 # include <iomanip>
 # include <iostream>
