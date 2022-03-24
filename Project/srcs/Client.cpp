@@ -9,7 +9,7 @@ Client::Client( const Client & src ) : _server(src._server)
 	*this = src;
 }
 
-Client::Client(int fd, std::string nickname, std::string username, Server &server)
+Client::Client(struct pollfd fd, std::string nickname, std::string username, Server &server)
 : _nickname(nickname), _username(username), _fd(fd), _server(server)
 {
 	std::vector<Client> clientList = _server.getClientList();
@@ -17,7 +17,7 @@ Client::Client(int fd, std::string nickname, std::string username, Server &serve
 	{
 		if (_nickname.compare((*it)._nickname) != 0)
 			throw Client::AlreadyUsedParametersException("❌ Nickname is already used ❌");
-		if (_fd == (*it)._fd)
+		if (_fd.fd == (*it)._fd.fd)
 			throw Client::AlreadyUsedParametersException("❌ File Descriptor is already used ❌");
 	}
 }
@@ -56,7 +56,7 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 
 void	Client::confirmConnexion(void)
 {
-	write(_fd, "Some Confirmation Message", 26);
+	write(_fd.fd, "Some Confirmation Message", 26);
 }
 
 void	Client::command(std::string command)
@@ -82,7 +82,7 @@ void	Client::command(std::string command)
 
 int			Client::getFd(void) const
 {
-	return (_fd);
+	return (_fd.fd);
 }
 
 std::string	Client::getNickname(void) const

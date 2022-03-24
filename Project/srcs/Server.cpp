@@ -6,7 +6,7 @@
 
 Server::Server() {
 	_port = -1;
-	_password = std::string(NULL);
+	_password = "";
 }
 
 Server::Server( const Server & src ) {
@@ -49,8 +49,9 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 //pour start
 int sock_bind_listen(const sockaddr_in *addr, int fd)
 {
-    if (bind(fd, (const sockaddr *)addr, sizeof(*addr)))
+    if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
         return (-1);
+std::cout << "fd = " << fd << std::endl;
     if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
         return (-2);
     return (0);
@@ -60,7 +61,7 @@ int sock_bind_listen(const sockaddr_in *addr, int fd)
 int sock_bind_listen(const sockaddr_in *addr)
 {
     int fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
-    if (bind(fd, (const sockaddr *)addr, sizeof(*addr)))
+    if (bind(fd, (const struct sockaddr *)addr, sizeof(*addr)))
         return (-1);
     if (listen(fd, SOMAXCONN))//SOMAXCONN laisse le systeme choisir le nombre max de connections
         return (-2);
@@ -74,7 +75,7 @@ int initSock(sockaddr_in *addr, long port, int fd)
     addr->sin_port = htonl(port);
     addr->sin_family = AF_INET6; //pour choper les IPv6
     //addr->sin_zero sert a rien, juste a s'assurer que la structure prenne 16 octets
-    if (sock_bind_listen(addr, fd))
+    if (sock_bind_listen(addr, fd) < 0)
         return (-1);
     return (0);
 }
@@ -88,13 +89,15 @@ int		Server::start(void)
 	char	buffer[BUFFER_SIZE];
 
 //mise em place de la socket qui ecoute au port donne en argument du programme
-	struct pollfd listening;
+	struct pollfd *listening = new (struct pollfd);
 	listening.fd = socket(PF_INET6, SOCK_STREAM, 0); //PF_INET6 pour IPv6, SOCK_STREAM est securise et ne fixe pas une taille de paquet
     fcntl(listening.fd, F_SETFL, O_NONBLOCK); //pour que la socket soit non-blocante
 	listening.events = POLLIN; //event "il y a des donnees en attente de lecture"
 	sockaddr_in addr;
+std::cout << "balise" << std::endl;
     if (initSock(&addr, _port, listening.fd))
         return (ERR_SOCKET);
+	
 //																			  //
     socklen_t size = sizeof(addr);
 	std::vector<struct pollfd> toMonitor; //tableau des fd a surveiller ave poll()
@@ -113,11 +116,18 @@ int		Server::start(void)
 			toMonitor.push_back(newClient);
 			//TODO : creer un nouveau Client ?
 		}
-		for () //ici, iterer sur toMonitor pour le recv
+		for (int i = 1; i < static_cast<int>(toMonitor.size()); i++) //ici, iterer sur toMonitor pour le recv
+		{
+			if (toMonitor[i].revents == POLLHUP) //le client s'est deconnecte
+				(void)newClient;//TODO : supprimer ce client
+			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, 0) > 0)
+				(void)buffer;//TODO : envoyer buffer au parsing !
+		}
 	}
+	std::cout << "Sorti du while infini" << std::endl;
 	
 //																			  //
-
+/*
 //					LIGNES A APPELER EN CAS DE NOUVELLE CONNEXIONS			  //
 	try
 	{
@@ -147,6 +157,8 @@ int		Server::start(void)
 	{
 		std::cout << exception.what() << std::endl;
 	}
+	*/
+	return (0);
 }
 
 /*

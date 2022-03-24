@@ -18,7 +18,7 @@ class Client
 
 	public:
 		Client( Client const & src );
-		Client(int fd, std::string nickname, std::string username, Server &server);
+		Client(struct pollfd fd, std::string nickname, std::string username, Server &server);
 		~Client();
 		Client 		&operator=(Client const & rhs);
 	
