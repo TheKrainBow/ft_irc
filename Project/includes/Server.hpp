@@ -46,6 +46,9 @@ class Server
 		std::vector<Client> getClientList(void) const;
 		Client				getClientFromInfo(int fd) const;
 		Client				getClientFromInfo(std::string username) const;
+		void				createClient(pollfd fd, char *buffer);
+		void				removeClient(pollfd *tab, int i, int &size);
+
 
 //									EXCEPTIONS								  //
 		class ClientNotFoundException : virtual public std::exception

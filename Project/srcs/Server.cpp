@@ -3,7 +3,6 @@
 
 /*TODO : fonctions a coder */
 
-void	createClient(pollfd fd, char *buffer);
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -51,8 +50,17 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	removeClient(pollfd *tab, int i, int &size)
+void	Server::createClient(pollfd fd, char *buffer)
 {
+//Mathieu, cette fonction est toute a toi :3
+}
+
+void	Server::removeClient(pollfd *tab, int i, int &size)
+{
+	std::vector<Client>::iterator	it = _clientList.begin();
+	while ((*it).getFd() != tab[i].fd)
+		it++;
+	_clientList.erase(it);
 	tab[i] = tab[size - 1];
 	size--;
 }
@@ -139,6 +147,7 @@ std::cout << "balise" << std::endl;
 			if (toMonitor[i].revents == POLLHUP) //le client s'est deconnecte
 				removeClient(toMonitor, i, sizeToMonitor);
 			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, MSG_DONTWAIT) > 0)
+				
 				(void)buffer;//TODO : envoyer buffer au parsing !
 		}
 	}
