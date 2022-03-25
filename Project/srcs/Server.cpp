@@ -1,6 +1,10 @@
 #include "Server.hpp"
 
 
+/*TODO : fonctions a coder */
+
+void	createClient(pollfd fd, char *buffer);
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -47,6 +51,12 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	removeClient(pollfd *tab, int i, int &size)
+{
+	tab[i] = tab[size - 1];
+	size--;
+}
+
 //pour start
 int sock_bind_listen(const sockaddr_in *addr, int fd)
 {
@@ -89,36 +99,45 @@ int		Server::start(void)
 	char	buffer[BUFFER_SIZE];
 
 //mise em place de la socket qui ecoute au port donne en argument du programme
-	struct pollfd *listening = new (struct pollfd);
-	listening->fd = socket(PF_INET, SOCK_STREAM/* | SOCK_NONBLOCK*/, 0); //PF_INET pour IPv4, SOCK_STREAM est securise et ne fixe pas une taille de paquet
-	listening->events = POLLRDNORM; //event "il y a des donnees en attente de lecture"
+	struct pollfd listening;
+	listening.fd = socket(PF_INET, SOCK_STREAM/* | SOCK_NONBLOCK*/, 0); //PF_INET pour IPv4, SOCK_STREAM est securise et ne fixe pas une taille de paquet
+	listening.events = POLLRDNORM; //event "il y a des donnees en attente de lecture"
 	sockaddr_in addr;
-	if (initSock(&addr, _port, listening->fd))
+	if (initSock(&addr, _port, listening.fd))
 		return (ERR_SOCKET);
 	
 	socklen_t size = sizeof(addr);
-	std::vector<struct pollfd> toMonitor; //tableau des fd a surveiller ave poll()
-	toMonitor.push_back(*listening);
+	pollfd toMonitor[256]; //tableau des fd a surveiller ave poll()
+	int		sizeToMonitor = 1;
+	toMonitor[0] = listening;
 
 	sockaddr_in addrNewClient;
 	struct pollfd	newClient;
 std::cout << "balise" << std::endl;
 	//while (poll(&toMonitor[0], toMonitor.size(), -1) > 0)
-	while (poll(listening, 1, -1) > 0)
+	while (poll(toMonitor, sizeToMonitor, -1) > 0)
 
 	{
 		std::cout << "boucle " ;
-		newClient.fd = accept(listening->fd, (sockaddr *)&addr, &size);
-		if (newClient.fd > 0)
+		newClient.fd = accept(listening.fd, (sockaddr *)&addr, &size);
+		if (newClient.fd > 0 && sizeToMonitor < 256)
 		{
 			sock_bind_listen(&addrNewClient, newClient.fd);
-			toMonitor.push_back(newClient);
-			//TODO : creer un nouveau Client ?
+			if (recv(newClient.fd, buffer, sizeof(char) * BUFFER_SIZE, 0) > 0)
+			{
+				try
+				{
+					createClient(newClient, buffer);
+					toMonitor[sizeToMonitor] = newClient;
+					sizeToMonitor++;
+				}
+				catch (std::exception& e){}
+			}
 		}
-		for (int i = 1; i < static_cast<int>(toMonitor.size()); i++) //ici, iterer sur toMonitor pour le recv
+		for (int i = 1; i < sizeToMonitor; i++)
 		{
 			if (toMonitor[i].revents == POLLHUP) //le client s'est deconnecte
-				(void)newClient;//TODO : supprimer ce client
+				removeClient(toMonitor, i, sizeToMonitor);
 			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, MSG_DONTWAIT) > 0)
 				(void)buffer;//TODO : envoyer buffer au parsing !
 		}
