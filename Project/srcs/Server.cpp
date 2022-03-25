@@ -53,14 +53,13 @@ std::ostream &			operator<<( std::ostream & o, Server const & i )
 void	Server::createClient(pollfd fd, char *buffer)
 {
 //Mathieu, cette fonction est toute a toi :3
+	(void)fd;
+	(void)buffer;
 }
 
 void	Server::removeClient(pollfd *tab, int i, int &size)
 {
-	std::vector<Client>::iterator	it = _clientList.begin();
-	while ((*it).getFd() != tab[i].fd)
-		it++;
-	_clientList.erase(it);
+	_clientList.erase(_clientList.find(tab[i].fd));
 	tab[i] = tab[size - 1];
 	size--;
 }
@@ -121,8 +120,6 @@ int		Server::start(void)
 
 	sockaddr_in addrNewClient;
 	struct pollfd	newClient;
-std::cout << "balise" << std::endl;
-	//while (poll(&toMonitor[0], toMonitor.size(), -1) > 0)
 	while (poll(toMonitor, sizeToMonitor, -1) > 0)
 
 	{
@@ -136,6 +133,7 @@ std::cout << "balise" << std::endl;
 				try
 				{
 					createClient(newClient, buffer);
+					(_clientList.find(newClient.fd))->second.confirmConnexion();
 					toMonitor[sizeToMonitor] = newClient;
 					sizeToMonitor++;
 				}
@@ -147,8 +145,7 @@ std::cout << "balise" << std::endl;
 			if (toMonitor[i].revents == POLLHUP) //le client s'est deconnecte
 				removeClient(toMonitor, i, sizeToMonitor);
 			if (recv(toMonitor[i].fd, buffer, sizeof(char) * BUFFER_SIZE, MSG_DONTWAIT) > 0)
-				
-				(void)buffer;//TODO : envoyer buffer au parsing !
+				(_clientList.find(toMonitor[i].fd))->second.command(static_cast<std::string>(buffer));
 		}
 	}
 	std::cout << "Sorti du while infini" << std::endl;
@@ -202,24 +199,24 @@ std::string Server::getPassword(void) const
 	return _password;
 }
 
-std::vector<Client>	Server::getClientList(void) const
+std::map<int, Client>	Server::getClientList(void) const
 {
 	return (_clientList);
 }
 
 Client Server::getClientFromInfo(int fd) const
 {
-	for (std::vector<Client>::const_iterator it = _clientList.begin(); it != _clientList.end(); it++)
-		if (fd == (*it).getFd())
-			return (*it);
+	for (std::map<int, Client>::const_iterator it = _clientList.begin(); it != _clientList.end(); it++)
+		if (fd == it->second.getFd())
+			return (it->second);
 	throw Server::ClientNotFoundException();
 }
 
 Client Server::getClientFromInfo(std::string nickname) const
 {
-	for (std::vector<Client>::const_iterator it = _clientList.begin(); it != _clientList.end(); it++)
-		if (nickname.compare((*it).getNickname()) != 0)
-			return (*it);
+	for (std::map<int, Client>::const_iterator it = _clientList.begin(); it != _clientList.end(); it++)
+		if (nickname.compare((it->second).getNickname()) != 0)
+			return (it->second);
 	throw Server::ClientNotFoundException();
 }
 

@@ -29,12 +29,12 @@ Client::Client(std::string command, Server &server) : _server(server)
 Client::Client(struct pollfd fd, std::string nickname, std::string username, Server &server)
 : _nickname(nickname), _username(username), _fd(fd), _server(server)
 {
-	std::vector<Client> clientList = _server.getClientList();
-	for (std::vector<Client>::iterator it = clientList.begin(); it != clientList.end(); it++)
+	std::map<int, Client> clientList = _server.getClientList();
+	for (std::map<int, Client>::iterator it = clientList.begin(); it != clientList.end(); it++)
 	{
-		if (_nickname.compare((*it)._nickname) != 0)
+		if (_nickname.compare(it->second._nickname) != 0)
 			throw Client::AlreadyUsedParametersException("❌ Nickname is already used ❌");
-		if (_fd.fd == (*it)._fd.fd)
+		if (_fd.fd == it->first)
 			throw Client::AlreadyUsedParametersException("❌ File Descriptor is already used ❌");
 	}
 }

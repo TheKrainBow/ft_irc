@@ -17,6 +17,7 @@
 # include <time.h>
 # include <unistd.h>
 # include <vector>
+# include <map>
 # include "Client.hpp"
 
 # define ERR_ARG -1
@@ -32,7 +33,7 @@ class Server
 	private:
 		int					_port;
 		std::string			_password;
-		std::vector<Client>	_clientList;
+		std::map<int, Client>	_clientList;
 
 	public:
 		Server();
@@ -43,7 +44,7 @@ class Server
 		int					start(void);
 		std::string			getPassword(void) const;
 		int					getPort(void) const;
-		std::vector<Client> getClientList(void) const;
+		std::map<int, Client> getClientList(void) const;
 		Client				getClientFromInfo(int fd) const;
 		Client				getClientFromInfo(std::string username) const;
 		void				createClient(pollfd fd, char *buffer);
