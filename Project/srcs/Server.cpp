@@ -118,12 +118,11 @@ int		Server::start(void)
 	int		sizeToMonitor = 1;
 	toMonitor[0] = listening;
 
-	sockaddr_in addrNewClient;
+	sockaddr_in		addrNewClient;
 	struct pollfd	newClient;
 	while (poll(toMonitor, sizeToMonitor, -1) > 0)
 
 	{
-		std::cout << "boucle " ;
 		newClient.fd = accept(listening.fd, (sockaddr *)&addr, &size);
 		if (newClient.fd > 0 && sizeToMonitor < 256)
 		{
@@ -132,12 +131,13 @@ int		Server::start(void)
 			{
 				try
 				{
+					Client test = Client(buffer, *this, newClient);
 					createClient(newClient, buffer);
-					(_clientList.find(newClient.fd))->second.confirmConnexion();
+					//(_clientList.find(newClient.fd))->second.confirmConnexion();
 					toMonitor[sizeToMonitor] = newClient;
 					sizeToMonitor++;
 				}
-				catch (std::exception& e){}
+				catch (std::exception& e) {}
 			}
 		}
 		for (int i = 1; i < sizeToMonitor; i++)

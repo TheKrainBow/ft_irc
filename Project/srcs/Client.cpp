@@ -9,21 +9,22 @@ Client::Client( const Client & src ) : _server(src._server)
 	*this = src;
 }
 
-Client::Client(std::string command, Server &server) : _server(server)
+Client::Client(std::string command, Server &server, struct pollfd fd) : _server(server)
 {
 	std::vector<std::string> args;
 	std::size_t found = command.find_first_of("\n");
 	std::size_t first = 0;
 	while (found != std::string::npos)
 	{
-		args.push_back(command.substr(first, found - first));
-		first = found;
-		found = command.find_first_of("\n",found + 1);
+		args.push_back(command.substr(first, found - first - 1));
+		first = found + 1;
+		std::cout << command[first] << std::endl;
+		found = command.find_first_of("\n", first);
 	}
 	for (std::vector<std::string>::iterator it = args.begin() ; it != args.end() ; it++)
-	{
 		this->command(*it);
-	}
+	send(fd.fd, "CAP * LS :", 11, MSG_DONTWAIT);
+	std::cout << "and now?" << std::endl;
 }
 
 Client::Client(struct pollfd fd, std::string nickname, std::string username, Server &server)
@@ -73,12 +74,13 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 
 void	Client::confirmConnexion(void)
 {
-	write(_fd.fd, "Some Confirmation Message", 26);
+	write(_fd.fd, "Some Confirmation Message", 26); //Write est interdit non?
 }
 
 void	Client::command(std::string command)
 {
-	std::vector<std::string> args;
+	std::cout << "exec command : [" << command << "]" << std::endl;
+	/*std::vector<std::string> args;
 	std::size_t found = command.find_first_of(" ");
 	std::size_t first = 0;
 	while (found != std::string::npos)
@@ -90,7 +92,7 @@ void	Client::command(std::string command)
 	for (std::vector<std::string>::iterator it = args.begin() ; it != args.end() ; it++)
 	{
 		std::cout << *it << std::endl;
-	}
+	}*/
 }
 
 /*

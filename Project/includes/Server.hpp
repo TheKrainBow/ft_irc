@@ -31,8 +31,8 @@ class Client;
 class Server
 {
 	private:
-		int					_port;
-		std::string			_password;
+		int						_port;
+		std::string				_password;
 		std::map<int, Client>	_clientList;
 
 	public:
