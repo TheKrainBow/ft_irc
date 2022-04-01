@@ -1,4 +1,4 @@
-#include "Channel.hpp"
+#include "../includes/Channel.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -46,6 +46,30 @@ std::ostream &			operator<<( std::ostream & o, Channel const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+Client	*Channel::getAdmin(void)
+{
+	return (_admin);
+}
+
+Client	*Channel::getClient(std::string username)
+{
+	for (std::vector<Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if ((*it)->getUsername() == username)
+			return *it;
+	}
+	return (nullptr);
+}
+
+std::vector<Client *>Channel::getClients(void)
+{
+	return (_clients);
+}
+
+void	Channel::addClient(Client *newClient)
+{
+	_clients.push_back(newClient);
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

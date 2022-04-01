@@ -1,6 +1,5 @@
 {
 	"files.associations": {
-		"vector": "cpp",
 		"array": "cpp",
 		"atomic": "cpp",
 		"bit": "cpp",
@@ -8,8 +7,6 @@
 		"cctype": "cpp",
 		"clocale": "cpp",
 		"cmath": "cpp",
-		"compare": "cpp",
-		"concepts": "cpp",
 		"cstdarg": "cpp",
 		"cstddef": "cpp",
 		"cstdint": "cpp",
@@ -20,8 +17,9 @@
 		"cwchar": "cpp",
 		"cwctype": "cpp",
 		"deque": "cpp",
-		"string": "cpp",
+		"map": "cpp",
 		"unordered_map": "cpp",
+		"vector": "cpp",
 		"exception": "cpp",
 		"algorithm": "cpp",
 		"functional": "cpp",
@@ -29,12 +27,15 @@
 		"memory": "cpp",
 		"memory_resource": "cpp",
 		"numeric": "cpp",
+		"optional": "cpp",
 		"random": "cpp",
+		"string": "cpp",
 		"string_view": "cpp",
 		"system_error": "cpp",
 		"tuple": "cpp",
 		"type_traits": "cpp",
 		"utility": "cpp",
+		"fstream": "cpp",
 		"initializer_list": "cpp",
 		"iomanip": "cpp",
 		"iosfwd": "cpp",
@@ -42,13 +43,10 @@
 		"istream": "cpp",
 		"limits": "cpp",
 		"new": "cpp",
-		"numbers": "cpp",
 		"ostream": "cpp",
 		"sstream": "cpp",
 		"stdexcept": "cpp",
 		"streambuf": "cpp",
-		"typeinfo": "cpp",
-		"optional": "cpp",
-		"fstream": "cpp"
+		"typeinfo": "cpp"
 	}
 }
