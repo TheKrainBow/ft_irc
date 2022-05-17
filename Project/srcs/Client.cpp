@@ -23,7 +23,8 @@ Client::Client(std::string command, Server &server, struct pollfd fd) : _server(
 	}
 	for (std::vector<std::string>::iterator it = args.begin() ; it != args.end() ; it++)
 		this->command(*it);
-	send(fd.fd, "CAP * LS :", 11, MSG_DONTWAIT);
+	_fd = fd;
+	//send(fd.fd, "CAP * LS :", 11, MSG_DONTWAIT);
 	std::cout << "and now?" << std::endl;
 }
 

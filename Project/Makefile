@@ -2,6 +2,7 @@ SRCS_CORE		=	srcs/Main.cpp							\
 					srcs/Client.cpp							\
 					srcs/Command.cpp						\
 					srcs/Server.cpp							\
+					srcs/Channel.cpp
 
 INCLUDES		=	-Iincludes								\
 

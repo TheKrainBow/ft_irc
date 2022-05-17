@@ -10,6 +10,7 @@ Channel::Channel()
 
 Channel::Channel( const Channel & src )
 {
+	(void)src;
 }
 
 
@@ -32,12 +33,14 @@ Channel &				Channel::operator=( Channel const & rhs )
 	//{
 		//this->_value = rhs.getValue();
 	//}
+	(void)rhs;
 	return *this;
 }
 
 std::ostream &			operator<<( std::ostream & o, Channel const & i )
 {
 	//o << "Value = " << i.getValue();
+	(void)i;
 	return o;
 }
 
